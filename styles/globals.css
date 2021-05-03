@@ -1,9 +1,13 @@
 html,
 body {
-  padding: 0;
+  /* ORIGINAL STYLES */
+  /* padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; */
+
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
 }
 
 a {
@@ -13,4 +17,9 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+/* GAME STYLES */
+ol, ul {
+  padding-left: 30px;
 }
