@@ -49,8 +49,11 @@ function Game(props) {
   const current = history[stepNumber];
   const winner = calculateWinner(current.squares);
   const moves = history.map((step, move) => {
+    console.log(step.squares);
+    if (history[move - 1]) { console.log(history[move - 1].squares); }
+    if (history[move - 1]) { console.log(step.squares - history[move - 1].squares); }
     const desc = move ?
-      'Go to move #' + move :
+      `Go to move #${move} (row: ${stepNumber}, column: ${stepNumber})`:
       'To the beginning of the game';
     return (
       <li key={move}>
