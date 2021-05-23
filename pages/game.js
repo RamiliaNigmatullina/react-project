@@ -16,12 +16,12 @@ class Game extends React.Component {
     };
   }
 
-  calculateColumn(i) {
-    return i % SQUARE_SIZE + 1;
-  }
-
   calculateRow(i) {
     return (i - i % SQUARE_SIZE) / SQUARE_SIZE + 1;
+  }
+
+  calculateColumn(i) {
+    return i % SQUARE_SIZE + 1;
   }
 
   handleClick(i) {
@@ -35,9 +35,10 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
-        squares: squares,
-        row: this.calculateRow(i),
         column: this.calculateColumn(i),
+        i: i,
+        row: this.calculateRow(i),
+        squares: squares,
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -48,6 +49,18 @@ class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
+    });
+  }
+
+  highlightStep(step) {
+    this.setState({
+      highlightI: step.i,
+    });
+  }
+
+  removeHighlight() {
+    this.setState({
+      highlightI: null,
     });
   }
 
@@ -62,7 +75,10 @@ class Game extends React.Component {
         'To the beginning of the game';
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button
+            onClick={() => this.jumpTo(move)}
+            onMouseOver={() => this.highlightStep(step)}
+            onMouseOut={() => this.removeHighlight()}>{desc}</button>
         </li>
       )
     });
@@ -76,6 +92,7 @@ class Game extends React.Component {
       <div className={styles.game}>
         <div className="gameBoard">
           <Board
+            i={this.state.highlightI}
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
           />

@@ -3,12 +3,17 @@ import Square from '../Square';
 import styles from './Board.module.css';
 
 function Board(props) {
-  const renderSquare = (i) => (
-    <Square
-      value={props.squares[i]}
-      onClick={() => props.onClick(i)}
-    />
-  )
+  const renderSquare = (i) => {
+    const isHighlighted = props.i == i;
+
+    return (
+      <Square
+        isHighlighted={isHighlighted}
+        onClick={() => props.onClick(i)}
+        value={props.squares[i]}
+      />
+    )
+  }
 
   return (
     <div>
