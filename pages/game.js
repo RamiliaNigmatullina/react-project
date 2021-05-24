@@ -1,6 +1,8 @@
 import React from 'react';
 import Board from '../components/Board';
+import HistoryOrderSwitcher from '../components/HistoryOrderSwitcher';
 import MovesList from '../components/MovesList';
+import Status from '../components/Status';
 import styles from '../styles/Game.module.css';
 
 const SQUARE_SIZE = 3;
@@ -9,9 +11,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: [{
-        squares: Array(9).fill(null)
-      }],
+      history: [{ squares: Array(9).fill(null) }],
       isAscOrder: true,
       selectedStep: null,
       stepNumber: 0,
@@ -19,25 +19,30 @@ class Game extends React.Component {
     };
   }
 
-  calculateRow(i) {
-    return (i - i % SQUARE_SIZE) / SQUARE_SIZE + 1;
-  }
+  calculateRow = (i) => (i - i % SQUARE_SIZE) / SQUARE_SIZE + 1
 
-  calculateColumn(i) {
-    return i % SQUARE_SIZE + 1;
-  }
+  calculateColumn = (i) => i % SQUARE_SIZE + 1
+
+  jumpTo = (step) => this.setState({ stepNumber: step, xIsNext: (step % 2) === 0, })
+
+  highlightStep = (step) => this.setState({ selectedStep: step.i })
+
+  removeHighlight = () => this.setState({ selectedStep: null })
+
+  changeHistoryOrder = () => this.setState({ isAscOrder: !this.state.isAscOrder })
 
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
-    // .slice() — создает копию массива (иммутабельность)
-    const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
+    const squares = current.squares.slice(); // .slice() — создает копию массива (иммутабельность)
+
+    if (calculateWinner(squares) || squares[i]) { return; }
+
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+
     let elements = squares.filter((element) => element != null);
     let isEnded = elements.length == SQUARE_SIZE * SQUARE_SIZE;
+
     this.setState({
       history: history.concat([{
         column: this.calculateColumn(i),
@@ -51,39 +56,10 @@ class Game extends React.Component {
     });
   }
 
-  jumpTo = (step) => this.setState({ stepNumber: step, xIsNext: (step % 2) === 0, })
-
-  highlightStep = (step) => this.setState({ selectedStep: step.i })
-
-  removeHighlight = () => this.setState({ selectedStep: null })
-
-  changeHistoryOrder() {
-    this.setState({
-      isAscOrder: !this.state.isAscOrder,
-    });
-  }
-
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-
-    let status;
-    if (winner) {
-      status = winner.name + ' Won!';
-    } else if (this.state.isEnded) {
-      status = 'Draw!';
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
-
-    const historyOrderSwitcher = () => {
-      const text = `Sort ${this.state.isAscOrder ? 'desc' : 'asc' }`;
-
-      return (
-        <button onClick={() => this.changeHistoryOrder()}>{text}</button>
-      )
-    }
 
     const selectedMoves = () => {
       let moves = [];
@@ -109,15 +85,19 @@ class Game extends React.Component {
           />
         </div>
         <div className={styles.gameInfo}>
-          <div>{status}</div>
-          <div>{historyOrderSwitcher()}</div>
+          <div>
+            <Status isEnded={this.state.isEnded} winner={winner} xIsNext={this.state.xIsNext} />
+          </div>
+          <div>
+            <HistoryOrderSwitcher isAscOrder={this.state.isAscOrder} onClick={this.changeHistoryOrder} />
+          </div>
           <div>
             <MovesList
               history={history}
               isAscOrder={this.state.isAscOrder}
               onClick={this.jumpTo}
-              onMouseOver={this.highlightStep}
               onMouseOut={this.removeHighlight}
+              onMouseOver={this.highlightStep}
             />
           </div>
         </div>
