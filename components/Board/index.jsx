@@ -2,12 +2,15 @@ import React from 'react';
 import Square from '../Square';
 import styles from './Board.module.css';
 
+const SQUARE_SIZE = 3;
+
 function Board(props) {
   const renderSquare = (i) => {
     const isHighlighted = props.i == i;
 
     return (
       <Square
+        key={i}
         isHighlighted={isHighlighted}
         onClick={() => props.onClick(i)}
         value={props.squares[i]}
@@ -15,23 +18,31 @@ function Board(props) {
     )
   }
 
+  const generateRowHtml = (row) => {
+    let rowHtml = [];
+
+    for(let column = 0; column < SQUARE_SIZE; column++) {
+      const i = row * SQUARE_SIZE + column;
+
+      rowHtml = rowHtml.concat(renderSquare(i))
+    }
+
+    return rowHtml;
+  }
+
+  const generateSquareHtml = () => {
+    let squareHtml = [];
+
+    for(let row = 0; row < SQUARE_SIZE; row++) {
+      squareHtml = squareHtml.concat(<div className={styles.boardRow} key={row}>{generateRowHtml(row)}</div>);
+    }
+
+    return squareHtml;
+  }
+
   return (
     <div>
-      <div className={styles.boardRow}>
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className={styles.boardRow}>
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className={styles.boardRow}>
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
+      {generateSquareHtml()}
     </div>
   )
 }
