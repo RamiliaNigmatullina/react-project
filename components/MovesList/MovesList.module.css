@@ -1,5 +1,10 @@
 .moveItem {
-  margin-bottom: 4px;
+  display: flex;
+  padding: 2px 0;
+}
+
+.moveNumber {
+  width: 24px;
 }
 
 .moveButton {

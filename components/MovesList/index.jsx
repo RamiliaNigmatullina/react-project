@@ -5,11 +5,7 @@ function MovesList({ history, isAscOrder, onClick, onMouseOut, onMouseOver }) {
   let movesList = [];
 
   const moveButton = (move, step, text) => (
-    <button
-      className={styles.moveButton}
-      onClick={() => onClick(move)}
-      onMouseOut={() => onMouseOut()}
-      onMouseOver={() => onMouseOver(step)}>
+    <button className={styles.moveButton} onClick={() => onClick(move)}>
       {text}
     </button>
   )
@@ -21,9 +17,13 @@ function MovesList({ history, isAscOrder, onClick, onMouseOut, onMouseOver }) {
     const moveNumber = `${move + 1}. `;
 
     return (
-      <div key={move} className={styles.moveItem}>
-        {moveNumber}
-        {moveButton(move, step, text)}
+      <div className={styles.moveItem} key={move} onMouseOut={() => onMouseOut()} onMouseOver={() => onMouseOver(step)}>
+        <div className={styles.moveNumber}>
+          {moveNumber}
+        </div>
+        <div>
+          {moveButton(move, step, text)}
+        </div>
       </div>
     );
   }
