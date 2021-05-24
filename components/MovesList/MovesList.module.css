@@ -4,7 +4,9 @@
 }
 
 .moveNumber {
-  width: 24px;
+  padding-right: 8px;
+  text-align: right;
+  width: 28px;
 }
 
 .moveButton {
