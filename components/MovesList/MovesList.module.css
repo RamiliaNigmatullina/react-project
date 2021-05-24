@@ -1,0 +1,16 @@
+.moveItem {
+  margin-bottom: 4px;
+}
+
+.moveButton {
+  background-color: white;
+  border: 1px solid black;
+  color: black;
+  padding: 4px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}

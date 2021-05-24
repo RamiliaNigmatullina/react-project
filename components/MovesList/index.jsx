@@ -1,10 +1,12 @@
 import React from 'react';
+import styles from './MovesList.module.css';
 
 function MovesList({ history, isAscOrder, onClick, onMouseOut, onMouseOver }) {
   let movesList = [];
 
   const moveButton = (move, step, text) => (
     <button
+      className={styles.moveButton}
       onClick={() => onClick(move)}
       onMouseOut={() => onMouseOut()}
       onMouseOver={() => onMouseOver(step)}>
@@ -19,7 +21,7 @@ function MovesList({ history, isAscOrder, onClick, onMouseOut, onMouseOver }) {
     const moveNumber = `${move + 1}. `;
 
     return (
-      <div key={move}>
+      <div key={move} className={styles.moveItem}>
         {moveNumber}
         {moveButton(move, step, text)}
       </div>
