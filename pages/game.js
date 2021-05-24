@@ -35,6 +35,8 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    let elements = squares.filter((element) => element != null);
+    let isEnded = elements.length == SQUARE_SIZE * SQUARE_SIZE;
     this.setState({
       history: history.concat([{
         column: this.calculateColumn(i),
@@ -44,6 +46,7 @@ class Game extends React.Component {
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
+      isEnded: isEnded,
     });
   }
 
@@ -107,6 +110,8 @@ class Game extends React.Component {
     let status;
     if (winner) {
       status = winner.name + ' Won!';
+    } else if (this.state.isEnded) {
+      status = 'Draw!';
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
