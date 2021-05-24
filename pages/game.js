@@ -9,9 +9,10 @@ class Game extends React.Component {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null),
+        squares: Array(9).fill(null)
       }],
       historyOrderAsc: true,
+      selectedMove: null,
       stepNumber: 0,
       xIsNext: true,
     };
@@ -55,13 +56,13 @@ class Game extends React.Component {
 
   highlightStep(step) {
     this.setState({
-      highlightI: step.i,
+      selectedMove: step.i,
     });
   }
 
   removeHighlight() {
     this.setState({
-      highlightI: null,
+      selectedMove: null,
     });
   }
 
@@ -105,7 +106,7 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = winner + ' Won!';
+      status = winner.name + ' Won!';
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -118,11 +119,25 @@ class Game extends React.Component {
       )
     }
 
+    const selectedMoves = () => {
+      let moves = [];
+
+      if (this.state.selectedMove !== null) {
+        moves = [this.state.selectedMove];
+      } else if (winner) {
+        moves = winner.line;
+      } else {
+        moves = []
+      }
+
+      return moves;
+    }
+
     return (
       <div className={styles.game}>
         <div className="gameBoard">
           <Board
-            i={this.state.highlightI}
+            selectedMoves={selectedMoves()}
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
           />
@@ -151,7 +166,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { line: [a, b, c], name: squares[a] };
     }
   }
   return null;

@@ -6,7 +6,7 @@ const SQUARE_SIZE = 3;
 
 function Board(props) {
   const renderSquare = (i) => {
-    const isHighlighted = props.i == i;
+    const isHighlighted = props.selectedMoves.includes(i);
 
     return (
       <Square
