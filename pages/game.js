@@ -1,5 +1,6 @@
 import React from 'react';
 import Board from '../components/Board';
+import MovesList from '../components/MovesList';
 import styles from '../styles/Game.module.css';
 
 const SQUARE_SIZE = 3;
@@ -11,8 +12,8 @@ class Game extends React.Component {
       history: [{
         squares: Array(9).fill(null)
       }],
-      historyOrderAsc: true,
-      selectedMove: null,
+      isAscOrder: true,
+      selectedStep: null,
       stepNumber: 0,
       xIsNext: true,
     };
@@ -50,62 +51,22 @@ class Game extends React.Component {
     });
   }
 
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-    });
-  }
+  jumpTo = (step) => this.setState({ stepNumber: step, xIsNext: (step % 2) === 0, })
 
-  highlightStep(step) {
-    this.setState({
-      selectedMove: step.i,
-    });
-  }
+  highlightStep = (step) => this.setState({ selectedStep: step.i })
 
-  removeHighlight() {
-    this.setState({
-      selectedMove: null,
-    });
-  }
+  removeHighlight = () => this.setState({ selectedStep: null })
 
   changeHistoryOrder() {
     this.setState({
-      historyOrderAsc: !this.state.historyOrderAsc,
+      isAscOrder: !this.state.isAscOrder,
     });
-  }
-
-  generateMoveHtml(move, step) {
-    const desc = move ?
-      `Go to move #${move} (row: ${step.row}, column: ${step.column})` :
-      'To the beginning of the game';
-    const moveText = `${move + 1}. `;
-
-    return (
-      <div key={move}>
-        {moveText}
-        <button
-          onClick={() => this.jumpTo(move)}
-          onMouseOver={() => this.highlightStep(step)}
-          onMouseOut={() => this.removeHighlight()}>
-          {desc}
-        </button>
-      </div>
-    );
   }
 
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-
-    let moves = [];
-
-    history.map((step, move) => {
-      moves = moves.concat(this.generateMoveHtml(move, step));
-    });
-
-    if (!this.state.historyOrderAsc) { moves = moves.reverse() }
 
     let status;
     if (winner) {
@@ -117,7 +78,7 @@ class Game extends React.Component {
     }
 
     const historyOrderSwitcher = () => {
-      const text = `Sort ${this.state.historyOrderAsc ? 'desc' : 'asc' }`;
+      const text = `Sort ${this.state.isAscOrder ? 'desc' : 'asc' }`;
 
       return (
         <button onClick={() => this.changeHistoryOrder()}>{text}</button>
@@ -127,8 +88,8 @@ class Game extends React.Component {
     const selectedMoves = () => {
       let moves = [];
 
-      if (this.state.selectedMove !== null) {
-        moves = [this.state.selectedMove];
+      if (this.state.selectedStep !== null) {
+        moves = [this.state.selectedStep];
       } else if (winner) {
         moves = winner.line;
       } else {
@@ -150,7 +111,15 @@ class Game extends React.Component {
         <div className={styles.gameInfo}>
           <div>{status}</div>
           <div>{historyOrderSwitcher()}</div>
-          <div>{moves}</div>
+          <div>
+            <MovesList
+              history={history}
+              isAscOrder={this.state.isAscOrder}
+              onClick={this.jumpTo}
+              onMouseOver={this.highlightStep}
+              onMouseOut={this.removeHighlight}
+            />
+          </div>
         </div>
       </div>
     );
