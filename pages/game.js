@@ -9,8 +9,9 @@ class Game extends React.Component {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
       }],
+      historyOrderAsc: true,
       stepNumber: 0,
       xIsNext: true,
     };
@@ -64,30 +65,59 @@ class Game extends React.Component {
     });
   }
 
+  changeHistoryOrder() {
+    this.setState({
+      historyOrderAsc: !this.state.historyOrderAsc,
+    });
+  }
+
+  generateMoveHtml(move, step) {
+    const desc = move ?
+      `Go to move #${move} (row: ${step.row}, column: ${step.column})` :
+      'To the beginning of the game';
+    const moveText = `${move + 1}. `;
+
+    return (
+      <div key={move}>
+        {moveText}
+        <button
+          onClick={() => this.jumpTo(move)}
+          onMouseOver={() => this.highlightStep(step)}
+          onMouseOut={() => this.removeHighlight()}>
+          {desc}
+        </button>
+      </div>
+    );
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        `Go to move #${move} (row: ${step.row}, column: ${step.column})` :
-        'To the beginning of the game';
-      return (
-        <li key={move}>
-          <button
-            onClick={() => this.jumpTo(move)}
-            onMouseOver={() => this.highlightStep(step)}
-            onMouseOut={() => this.removeHighlight()}>{desc}</button>
-        </li>
-      )
+    let moves = [];
+
+    history.map((step, move) => {
+      moves = moves.concat(this.generateMoveHtml(move, step));
     });
+
+    if (!this.state.historyOrderAsc) { moves = moves.reverse() }
+
     let status;
     if (winner) {
       status = winner + ' Won!';
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
+
+    const historyOrderSwitcher = () => {
+      const text = `Sort ${this.state.historyOrderAsc ? 'desc' : 'asc' }`;
+
+      return (
+        <button onClick={() => this.changeHistoryOrder()}>{text}</button>
+      )
+    }
+
     return (
       <div className={styles.game}>
         <div className="gameBoard">
@@ -99,7 +129,8 @@ class Game extends React.Component {
         </div>
         <div className={styles.gameInfo}>
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <div>{historyOrderSwitcher()}</div>
+          <div>{moves}</div>
         </div>
       </div>
     );
