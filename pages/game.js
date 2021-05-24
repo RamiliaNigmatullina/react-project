@@ -23,7 +23,7 @@ class Game extends React.Component {
 
   calculateColumn = (i) => i % SQUARE_SIZE + 1
 
-  jumpTo = (step) => this.setState({ stepNumber: step, xIsNext: (step % 2) === 0, })
+  jumpTo = (step) => this.setState({ stepNumber: step, xIsNext: (step % 2) === 0, isEnded: false })
 
   highlightStep = (step) => this.setState({ selectedStep: step.i })
 
