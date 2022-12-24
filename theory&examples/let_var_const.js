@@ -37,3 +37,5 @@ person = {} // TypeError: Assignment to constant variable.
 //   block scoped
 //   ReferenceError when accessing a variable before it's declared
 //   can't be reassigned
+
+// Доп. ссылка: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let
